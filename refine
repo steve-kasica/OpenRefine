@@ -810,29 +810,6 @@ if [ "$OS" = "windows" ] ; then
     SEP=";"
 fi
 
-
-# ----- Make sure there is an appropriate java environment is available -------------
-
-if [ "$OS" = "macosx" ] ; then
-    if [ -z "$JAVA_HOME" ] ; then
-    # We need want recent Java because we're bundling JRE - may want to warn and force developer to set JAVA_HOME
-    # The /usr/libexec/java_home utility may be tied to the Java prefs app, so could go away when Apple removes it
-        export JAVA_HOME=$(/usr/libexec/java_home)
-    fi
-fi
-
-if [ "$JAVA_HOME" ] ; then
-    JAVA="$JAVA_HOME/bin/java"
-else
-    JAVA="`command -v java 2> /dev/null`"
-fi
-
-if [ ! -x "$JAVA" ] ; then
-    error "Could not find the 'java' executable at '$JAVA', are you sure your JAVA_HOME environment variable is pointing to a proper java installation?"
-fi
-
-checkJavaMajorVersion
-
 # ----- Parse the command line args ------------------------------------------
 
 while [ $# -ne 0 ] ; do
@@ -871,6 +848,28 @@ fi
 
 echo "Using ${REFINE_INI_PATH} for configuration"
 load_configs $REFINE_INI_PATH
+
+# ----- Make sure there is an appropriate java environment is available -------------
+
+if [ "$OS" = "macosx" ] ; then
+    if [ -z "$JAVA_HOME" ] ; then
+    # We need want recent Java because we're bundling JRE - may want to warn and force developer to set JAVA_HOME
+    # The /usr/libexec/java_home utility may be tied to the Java prefs app, so could go away when Apple removes it
+        export JAVA_HOME=$(/usr/libexec/java_home)
+    fi
+fi
+
+if [ "$JAVA_HOME" ] ; then
+    JAVA="$JAVA_HOME/bin/java"
+else
+    JAVA="`command -v java 2> /dev/null`"
+fi
+
+if [ ! -x "$JAVA" ] ; then
+    error "Could not find the 'java' executable at '$JAVA', are you sure your JAVA_HOME environment variable is pointing to a proper java installation?"
+fi
+
+checkJavaMajorVersion
 
 # ----- Verify and Set Required Environment Variables -------------------------
 
